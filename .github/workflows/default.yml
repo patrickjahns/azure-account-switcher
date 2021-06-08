@@ -1,0 +1,25 @@
+name: Test and Build
+on:
+  - push
+  - pull_request
+
+jobs:
+  default:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '^1.16.1'
+      - name: Tests
+        run: |
+          make fmt
+          make vet
+          make test
+          make build
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v2.3.0
+        with:
+          version: v1.33
+      - name: Build release type artifacts
+        run: make release
